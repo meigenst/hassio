@@ -40,6 +40,20 @@ blueprint:
       selector:
         entity:
           domain: remote
+    light_sensor:
+      name: Lichtsensor
+      description: Der zu verwendende Lichtsensor
+      selector:
+        entity:
+          domain: sensor
+    light_threshold:
+      name: Licht-Schwelle
+      description: Unterhalb von diesem Wert wird das Licht eingeschaltet
+      default: 100
+      selector:
+        number:
+          min: 0
+          max: 255
 
 trigger:
   - platform: time
@@ -83,6 +97,9 @@ action:
               - condition: time
                 after: "06:00:00"
                 before: "22:00:00"
+              - condition: numeric_state
+                entity_id: !input light_sensor
+                below: !input light_threshold
         sequence:
           - service: scene.turn_on
             data: {}
@@ -99,6 +116,9 @@ action:
                 state: "on"
               - condition: time
                 after: "20:15:00"
+              - condition: numeric_state
+                entity_id: !input light_sensor
+                below: !input light_threshold
         sequence:
           - service: scene.turn_on
             data: {}
@@ -115,6 +135,9 @@ action:
                 state: "off"
               - condition: time
                 after: "20:15:00"
+              - condition: numeric_state
+                entity_id: !input light_sensor
+                below: !input light_threshold
         sequence:
           - service: scene.turn_on
             data: {}
@@ -129,6 +152,9 @@ action:
               - condition: time
                 after: "22:00:00"
                 before: "06:00:00"
+              - condition: numeric_state
+                entity_id: !input light_sensor
+                below: !input light_threshold
         sequence:
           - service: scene.turn_on
             data: {}
@@ -152,6 +178,9 @@ action:
               - condition: state
                 entity_id: !input motion_sensor
                 state: "on"
+              - condition: numeric_state
+                entity_id: !input light_sensor
+                below: !input light_threshold
         sequence:
           - service: scene.turn_on
             data: {}
