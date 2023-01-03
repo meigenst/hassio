@@ -1,0 +1,156 @@
+blueprint:
+  name: Bewegung EG - Radio
+  description: Radio einschalten, basierend auf dem Zustand des EG
+  domain: automation
+  input:
+    motion_sensor:
+      name: Bewegungsmelder
+      description: Dieser Bewegungsmelder wird für die Automatisierung genutzt
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    radio:
+      name: Radio
+      description: Dieses Radio wird geschaltet
+      selector:
+        entity:
+          domain: media_player
+    harmony_hub:
+      name: Harmony Hub
+      description: Der zu verwendende Harmony Hub
+      selector:
+        entity:
+          domain: remote
+    harmony_activities:
+      name: Harmony Hub Activities
+      description: Die zu verwendende Harmony Activity Entity
+      selector:
+        entity:
+          domain: select
+
+trigger:
+  - platform: time
+    at: "06:00:00"
+  - platform: time
+    at: "20:15:00"
+  - platform: time
+    at: "22:00:00"
+  - platform: state
+    entity_id:
+      - !input harmony_hub
+    to: "on"
+  - platform: state
+    entity_id:
+      - !input harmony_hub
+    to: "off"
+  - platform: state
+    entity_id:
+      - !input motion_sensor
+    to: "on"
+  - platform: state
+    entity_id:
+      - !input motion_sensor
+    to: "off"
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+
+action:
+  - choose:
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "on"
+              - condition: state
+                entity_id: !input harmony_hub
+                state: "off"
+              - condition: time
+                after: "06:30:00"
+                before: "22:00:00"
+        sequence:
+          - service: media_player.turn_on
+            data: {}
+            target:
+              entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input harmony_hub
+                state: "on"
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "on"
+              - condition: time
+                after: "20:15:00"
+        sequence:
+          - service: media_player.turn_off
+            data: {}
+            target:
+              entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input harmony_hub
+                state: "on"
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "off"
+              - condition: time
+                after: "20:15:00"
+        sequence:
+          - service: media_player.turn_off
+            data: {}
+            target:
+              entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "on"
+              - condition: time
+                after: "22:00:00"
+                before: "06:00:00"
+        sequence:
+          - service: media_player.turn_off
+            data: {}
+            target:
+              entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "off"
+        sequence:
+          - service: media_player.turn_off
+            data: {}
+            target:
+              entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input harmony_hub
+                state: "on"
+              - condition: state
+                entity_id: !input harmony_activities
+                state: "Musik"
+              - condition: state
+                entity_id: !input motion_sensor
+                state: "on"
+              - condition: time
+                after: "06:30:00"
+                before: "22:00:00"
+        sequence:
+          - service: media_player.turn_on
+            data: {}
+            target:
+              entity_id: !input radio
+mode: single
