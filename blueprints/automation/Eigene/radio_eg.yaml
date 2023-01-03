@@ -153,4 +153,15 @@ action:
             data: {}
             target:
               entity_id: !input radio
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input harmony_hub
+                state: "on"
+        sequence:
+          - service: media_player.turn_off
+            data: {}
+            target:
+              entity_id: !input radio
 mode: single
