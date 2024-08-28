@@ -35,11 +35,11 @@ blueprint:
         entity:
           domain: scene
     harmony_hub:
-      name: Harmony Hub
-      description: Der zu verwendende Harmony Hub
+      name: FireTV
+      description: Der zu verwendende FireTV
       selector:
         entity:
-          domain: remote
+          domain: media_player
     light_sensor:
       name: Lichtsensor
       description: Der zu verwendende Lichtsensor
@@ -65,11 +65,6 @@ trigger:
   - platform: state
     entity_id:
       - !input harmony_hub
-    to: "on"
-  - platform: state
-    entity_id:
-      - !input harmony_hub
-    to: "off"
   - platform: state
     entity_id:
       - !input motion_sensor
@@ -108,9 +103,11 @@ action:
       - conditions:
           - condition: and
             conditions:
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "on"
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "off"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "on"
@@ -127,9 +124,11 @@ action:
       - conditions:
           - condition: and
             conditions:
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "on"
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "off"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "off"
