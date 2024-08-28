@@ -1,0 +1,155 @@
+blueprint:
+  name: Beschattung
+  description: Die Beschattung mit Rollläden ausführen
+  domain: automation
+  input:
+    weather_state:
+      name: Wetter Status
+      description: Entity, die das aktuelle Wetter wiedergibt (zB "sunny")
+      default: weather.accuweather_home
+      selector:
+        entity:
+          domain: weather
+          multiple: false
+    sun_template:
+      name: Sonnenposition
+      description: Template, das beschreibt zu welcher Sonnenposition die Beschattung aktiv ist
+      default: "{{ (state_attr('sun.sun', 'azimuth')|int) < 155 and (state_attr('sun.sun', 'elevation')|int) > 8 }}"
+      selector:
+        template:
+    temperature:
+      name: Temperatur
+      description: Ab dieser vorhergesagten Temperatur wird beschattet
+      default: 22
+      selector:
+        number:
+          min: 18
+          max: 30
+    temperature_sen:
+      name: Temperatur Sensor
+      description: Sensor, der die vorhergesagte Temperatur beinhaltet
+      default: sensor.accuweather_home_realfeel_temperature_max_0d
+      selector:
+        entity:
+          domain: sensor
+          multiple: false
+    cloudcover:
+      name: Wolkenbedeckung
+      description: Unterhalb dieser Grenze (in %) wird beschattet
+      default: "40"
+      selector:
+        state:
+          entity_id: sensor.accuweather_home_cloud_cover
+    cloudcover_sen:
+      name: Wolkenbedeckung Sensor
+      description: Sensor, der die Wolkenbedeckung beinhaltet
+      default: sensor.accuweather_home_cloud_cover
+      selector:
+        entity:
+          domain: sensor
+          multiple: false
+    block_dummy:
+      name: Deaktivierung
+      description: Schalter, der die Beschattung deaktiviert
+      default: input_boolean.beschattung_wohnzimmer
+      selector:
+        entity:
+          domain: input_boolean
+          multiple: false
+    cover_level:
+      name: Rollladen Höhe
+      description: Auf welche Höhe wird gefahren bei Beschattung
+      default: "0.3"
+      selector:
+        state:
+          entity_id: sensor.00111a4999b5ed_level
+    cover_level2:
+      name: Rollladen Höhe x100
+      description: Muss den Wert von oben x100 haben
+      default: 30
+      selector:
+        number:
+          min: 0
+          max: 100
+    cover:
+      name: Rollladen
+      description: Welcher Rollladen wird genutzt
+      default: cover.00111a4999b5ed
+      selector:
+        entity:
+          domain: cover
+          multiple: false
+    cover_level_sen:
+      name: Rollladen Höhe Sensor
+      description: Sensor, der die Höhe des Rollladen beinhaltet
+      default: sensor.00111a4999b5ed_level
+      selector:
+        entity:
+          domain: sensor
+          multiple: false
+
+description: ""
+mode: single
+trigger:
+  - platform: time_pattern
+    minutes: /5
+condition: []
+action:
+  - if:
+      - condition: and
+        conditions:
+          - condition: or
+            conditions:
+              - condition: state
+                entity_id: !input weather_state
+                state: partlycloudy
+              - condition: state
+                entity_id: !input weather_state
+                state: sunny
+          - condition: template
+            value_template: !input sun_template
+          - condition: numeric_state
+            entity_id: !input temperature_sen
+            above: !input temperature
+          - condition: numeric_state
+            entity_id: !input cloudcover_sen
+            below: !input cloudcover
+          - condition: numeric_state
+            entity_id: !input cover_level_sen
+            above: !input cover_level
+          - condition: state
+            entity_id: !input block_dummy
+            state: "on"
+    then:
+      - service: cover.set_cover_position
+        data:
+          position: !input cover_level2
+        target:
+          entity_id: !input cover
+    else:
+      - if:
+          - condition: and
+            conditions:
+              - condition: not
+                conditions:
+                  - condition: and
+                    conditions:
+                      - condition: template
+                        value_template: !input sun_template
+                      - condition: numeric_state
+                        entity_id: !input temperature_sen
+                        above: !input temperature
+                      - condition: numeric_state
+                        entity_id: !input cloudcover_sen
+                        below: !input cloudcover
+              - condition: state
+                entity_id: !input block_dummy
+                state: "on"
+              - condition: state
+                entity_id: !input cover_level_sen
+                state: !input cover_level
+        then:
+          - service: cover.open_cover
+            data: {}
+            target:
+              entity_id: !input cover
