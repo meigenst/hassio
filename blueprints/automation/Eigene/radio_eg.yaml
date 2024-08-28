@@ -17,11 +17,11 @@ blueprint:
         entity:
           domain: media_player
     harmony_hub:
-      name: Harmony Hub
-      description: Der zu verwendende Harmony Hub
+      name: FireTV
+      description: Der zu verwendende FireTV
       selector:
         entity:
-          domain: remote
+          domain: media_player
     harmony_activities:
       name: Harmony Hub Activities
       description: Die zu verwendende Harmony Activity Entity
@@ -79,9 +79,11 @@ action:
       - conditions:
           - condition: and
             conditions:
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "on"
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "off"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "on"
@@ -95,9 +97,11 @@ action:
       - conditions:
           - condition: and
             conditions:
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "on"
+              - condition: not
+                conditions:
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "off"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "off"
@@ -130,26 +134,6 @@ action:
                 state: "off"
         sequence:
           - service: media_player.turn_off
-            data: {}
-            target:
-              entity_id: !input radio
-      - conditions:
-          - condition: and
-            conditions:
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "on"
-              - condition: state
-                entity_id: !input harmony_activities
-                state: "Musik"
-              - condition: state
-                entity_id: !input motion_sensor
-                state: "on"
-              - condition: time
-                after: "06:30:00"
-                before: "22:00:00"
-        sequence:
-          - service: media_player.turn_on
             data: {}
             target:
               entity_id: !input radio
