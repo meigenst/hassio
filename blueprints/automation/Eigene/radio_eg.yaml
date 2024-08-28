@@ -39,11 +39,6 @@ trigger:
   - platform: state
     entity_id:
       - !input harmony_hub
-    to: "on"
-  - platform: state
-    entity_id:
-      - !input harmony_hub
-    to: "off"
   - platform: state
     entity_id:
       - !input motion_sensor
