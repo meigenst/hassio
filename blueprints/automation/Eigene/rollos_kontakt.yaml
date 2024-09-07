@@ -1,0 +1,111 @@
+blueprint:
+  name: Rollläden mit Fensterkontakt
+  description: Rollläden, die einen Fensterkontakt haben, passend hoch- und runterfahren
+  domain: automation
+  input:
+    down_time:
+      name: Uhrzeit runter
+      description: Zu dieser Uhrzeit wird der Rollladen heruntergefahren, wenn das Fenster zu ist
+      selector:
+        time:
+    up_time:
+      name: Uhrzeit hoch
+      description: Zu dieser Uhrzeit wird der Rollladen hochgefahren
+      selector:
+        time:
+    bp_enabled:
+      name: Schalter zum disablen
+      description: Helper on/off der Automation disablen kann
+      selector:
+        entity:
+          domain: input_boolean
+    shutter:
+      name: Rollladen
+      description: der Rollladen, der geschaltet werden soll
+      selector:
+        entity:
+          domain: cover
+    shutter_level:
+      name: Rollladenhöhe
+      description: Sensor, wie hoch der Rollladen gerade ist
+      selector:
+        entity:
+          domain: sensor
+    contact:
+      name: Kontakt
+      description: der Fensterkontakt am Fenster
+      selector:
+        entity:
+          domain: binary_sensor
+    illuminance_outside:
+      name: Aussen Helligkeit (lux)
+      description: Sensor mit Helligkeit aussen
+      selector:
+        entity:
+          domain: sensor
+
+trigger:
+  - platform: time
+    at: !input down_time
+  - platform: time
+    at: !input up_time
+  - platform: state
+    entity_id:
+      - !input contact
+    to: "off"
+  - platform: numeric_state
+    entity_id:
+      - !input illuminance_outside
+    below: 500
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input contact
+                state: "off"
+              - condition: time
+                after: !input down_time
+                before: "03:00:00"
+              - condition: numeric_state
+                entity_id: !input shutter_level
+                above: 0
+        sequence:
+          - target:
+              entity_id: !input shutter
+            data: {}
+            action: cover.close_cover
+      - conditions:
+          - condition: and
+            conditions:
+              - condition: time
+                after: !input up_time
+                before: "12:00:00"
+              - condition: state
+                entity_id: !input shutter_level
+                state: "0.0"
+        sequence:
+          - target:
+              entity_id: !input shutter
+            data: {}
+            action: cover.open_cover
+      - conditions:
+        - condition: and
+          conditions:
+            - condition: numeric_state
+              entity_id: !input shutter_level
+              above: 0.5
+            - condition: time
+              after: "17:30:00"
+              before: "22:00:00"
+            - condition: numeric_state
+              entity_id: !input illuminance_outside
+              below: 1.1
+        sequence:
+          - target:
+              entity_id: !input shutter
+            data: {}
+            action: cover.open_cover
+mode: single
