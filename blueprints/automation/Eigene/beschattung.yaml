@@ -25,6 +25,7 @@ blueprint:
         number:
           min: 18
           max: 30
+          mode: slider
     temperature_sen:
       name: Temperatur Sensor
       description: Sensor, der die vorhergesagte Temperatur beinhaltet
@@ -38,8 +39,10 @@ blueprint:
       description: Unterhalb dieser Grenze (in %) wird beschattet
       default: "40"
       selector:
-        state:
-          entity_id: sensor.accuweather_home_cloud_cover
+        number:
+          min: 0
+          max: 100
+          mode: slider
     cloudcover_sen:
       name: Wolkenbedeckung Sensor
       description: Sensor, der die Wolkenbedeckung beinhaltet
@@ -65,6 +68,7 @@ blueprint:
           min: 0
           max: 1
           step: 0.01
+          mode: slider
     cover_level2:
       name: Rollladen Höhe x100
       description: Muss den Wert von oben x100 haben
@@ -73,6 +77,8 @@ blueprint:
         number:
           min: 0
           max: 100
+          step: 1
+          mode: slider
     cover:
       name: Rollladen
       description: Welcher Rollladen wird genutzt
