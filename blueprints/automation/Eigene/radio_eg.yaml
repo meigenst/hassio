@@ -137,7 +137,7 @@ action:
             target:
               entity_id: !input radio
       - conditions:
-          - condition: and
+          - condition: not
             conditions:
               - condition: state
                 entity_id: !input harmony_hub
