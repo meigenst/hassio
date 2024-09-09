@@ -61,8 +61,10 @@ blueprint:
       description: Auf welche Höhe wird gefahren bei Beschattung
       default: "0.3"
       selector:
-        state:
-          entity_id: sensor.00111a4999b5ed_level
+        number:
+          min: 0
+          max: 1
+          step: 0.01
     cover_level2:
       name: Rollladen Höhe x100
       description: Muss den Wert von oben x100 haben
