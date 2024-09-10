@@ -106,16 +106,6 @@ blueprint:
 
 mode: single
 
-variables:
-  var_weather: !input weather_state
-  var_temp: !input temperature
-  var_tempsen: !input temperature_sen
-  var_cloud: !input cloudcover
-  var_cloudsen: !input cloudcover_sen
-  var_block: !input block_dummy
-  var_coverlvl: !input cover_level
-  var_coverlvlsen: !input cover_level_sen
-
 trigger:
   - platform: time_pattern
     minutes: /5
