@@ -137,11 +137,10 @@ condition:
     attribute: elevation
     above: 0
 action:
-  - action: system_log.write
+  - action: logbook.log
     metadata: {}
     data:
-      level: debug
-      logger: beschattung_blueprint
+      name: beschattung_blueprint
       message: >
         triggered by {{ trigger.entity_id }}
 
