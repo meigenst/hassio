@@ -95,6 +95,14 @@ blueprint:
         entity:
           domain: sensor
           multiple: false
+    timer_disable:
+      name: Timer pausieren der Automation
+      description: Timer Helper um Pausen zwischen einzelnen Läufen einzuführen
+      default: timer.disable_beschattung_wohnzimmer
+      selector:
+        entity:
+          domain: timer
+          multiple: false
 
 description: ""
 mode: single
@@ -120,6 +128,9 @@ condition:
     entity_id: sun.sun
     attribute: elevation
     above: 0
+  - condition: state
+    entity_id: !input timer_disable
+    state: idle
 action:
   - if:
       - condition: trigger
