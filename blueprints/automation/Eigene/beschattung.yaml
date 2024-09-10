@@ -128,9 +128,6 @@ condition:
     entity_id: sun.sun
     attribute: elevation
     above: 0
-  - condition: state
-    entity_id: !input timer_disable
-    state: idle
 action:
   - if:
       - condition: trigger
@@ -166,6 +163,9 @@ action:
           - condition: state
             entity_id: !input block_dummy
             state: "on"
+          - condition: state
+            entity_id: !input timer_disable
+            state: idle
     then:
       - service: cover.set_cover_position
         data:
@@ -191,6 +191,9 @@ action:
               - condition: state
                 entity_id: !input block_dummy
                 state: "on"
+              - condition: state
+                entity_id: !input timer_disable
+                state: idle
               - condition: state
                 entity_id: !input cover_level_sen
                 state: !input cover_level
