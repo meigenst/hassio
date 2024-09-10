@@ -147,15 +147,15 @@ action:
 
         weather: {{ states(var_weather) }}
 
-        temperature: wanted above {{ states(var_temp) }}, got {{
+        temperature: wanted above {{ var_temp }}, got {{
         states(var_tempsen) }}
 
-        cloud: wanted below {{ states(var_cloud) }}, got {{ states(var_cloudsen)
+        cloud: wanted below {{ var_cloud }}, got {{ states(var_cloudsen)
         }}
 
         block_dummy: {{ states(var_block) }}
 
-        coverlvl: wanted above {{ states(var_coverlvl) }}, got {{
+        coverlvl: wanted above {{ var_coverlvl }}, got {{
         states(var_coverlvlsen) }}
   - if:
       - condition: trigger
