@@ -101,8 +101,35 @@ mode: single
 trigger:
   - platform: time_pattern
     minutes: /5
-condition: []
+    enabled: false
+  - platform: state
+    entity_id:
+      - sun.sun
+    attribute: azimuth
+  - platform: state
+    entity_id:
+      - !input block_dummy
+    to: "off"
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    id: off_switch
+condition:
+  - condition: numeric_state
+    entity_id: sun.sun
+    attribute: elevation
+    above: 0
 action:
+  - if:
+      - condition: trigger
+        id:
+          - off_switch
+    then:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: !input block_dummy
+        data: {}
   - if:
       - condition: and
         conditions:
