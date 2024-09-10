@@ -199,3 +199,7 @@ action:
             data: {}
             target:
               entity_id: !input cover
+  - action: timer.start
+    target:
+      entity_id: !input timer_disable
+    data: {}
