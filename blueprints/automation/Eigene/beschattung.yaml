@@ -143,7 +143,7 @@ action:
       level: debug
       logger: beschattung_blueprint
       message: |
-	      triggered by {{ trigger.entity_id }}
+        triggered by {{ trigger.entity_id }}
         weather: {{ states(var_weather) }}
         temperature: wanted above {{ states(var_temperature) }}, got {{ states(var_temperaturesen) }}
         cloud: wanted below {{ states(var_cloud) }}, got {{ states(var_cloudsen) }}
