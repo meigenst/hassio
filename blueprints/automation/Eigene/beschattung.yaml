@@ -142,13 +142,21 @@ action:
     data:
       level: debug
       logger: beschattung_blueprint
-      message: |
+      message: >
         triggered by {{ trigger.entity_id }}
+
         weather: {{ states(var_weather) }}
-        temperature: wanted above {{ states(var_temp) }}, got {{ states(var_tempsen) }}
-        cloud: wanted below {{ states(var_cloud) }}, got {{ states(var_cloudsen) }}
+
+        temperature: wanted above {{ states(var_temp) }}, got {{
+        states(var_tempsen) }}
+
+        cloud: wanted below {{ states(var_cloud) }}, got {{ states(var_cloudsen)
+        }}
+
         block_dummy: {{ states(var_block) }}
-        coverlvl: wanted above {{ states(var_coverlvl) }}, got {{ states(var_coverlvlsen) }}
+
+        coverlvl: wanted above {{ states(var_coverlvl) }}, got {{
+        states(var_coverlvlsen) }}
   - if:
       - condition: trigger
         id:
