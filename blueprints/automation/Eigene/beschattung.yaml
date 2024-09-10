@@ -105,7 +105,6 @@ blueprint:
           multiple: false
 
 mode: single
-
 trigger:
   - platform: time_pattern
     minutes: /5
