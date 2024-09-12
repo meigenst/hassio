@@ -103,6 +103,22 @@ blueprint:
         entity:
           domain: timer
           multiple: false
+    button_up:
+      name: ID des Geräts für den Deaktivieren Button
+      description: ID des Geräts in Homematic
+      default: "00111BE997FD10"
+      selector:
+        text:
+    button_channel:
+      name: Channel des Buttons zum Deaktivieren
+      description: Channel in Homematic
+      default: "2"
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 1
+          mode: slider
 
 mode: single
 variables:
@@ -131,6 +147,13 @@ trigger:
       minutes: 10
       seconds: 0
     id: off_switch
+  - platform: event
+    event_type: homematic.keypress
+    event_data:
+      name: !input button_up
+      channel: !input button_channel
+      param: PRESS_SHORT
+    id: off_event
 condition:
   - condition: numeric_state
     entity_id: sun.sun
@@ -165,6 +188,16 @@ action:
         target:
           entity_id: !input block_dummy
         data: {}
+  - if:
+      - condition: trigger
+        id:
+          - off_event
+    then:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: !input block_dummy
+        data: {}
+      - stop: break
   - if:
       - condition: and
         conditions:
