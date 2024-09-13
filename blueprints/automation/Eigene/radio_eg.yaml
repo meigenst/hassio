@@ -60,9 +60,14 @@ action:
               - condition: state
                 entity_id: !input motion_sensor
                 state: "on"
-              - condition: state
-                entity_id: !input harmony_hub
-                state: "off"
+              - condition: or
+                conditions:
+                - condition: state
+                  entity_id: !input harmony_hub
+                  state: "off"
+                - condition: state
+                  entity_id: !input harmony_hub
+                  state: "unavailable"
               - condition: time
                 after: "06:30:00"
                 before: "22:00:00"
@@ -80,9 +85,14 @@ action:
             conditions:
               - condition: not
                 conditions:
+                - condition: or
+                  conditions:
                   - condition: state
                     entity_id: !input harmony_hub
                     state: "off"
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "unavailable"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "on"
@@ -98,9 +108,14 @@ action:
             conditions:
               - condition: not
                 conditions:
+                - condition: or
+                  conditions:
                   - condition: state
                     entity_id: !input harmony_hub
                     state: "off"
+                  - condition: state
+                    entity_id: !input harmony_hub
+                    state: "unavailable"
               - condition: state
                 entity_id: !input motion_sensor
                 state: "off"
