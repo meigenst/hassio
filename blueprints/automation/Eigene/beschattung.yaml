@@ -238,7 +238,7 @@ action:
             conditions:
               - condition: not
                 conditions:
-                  - condition: and
+                  - condition: or
                     conditions:
                       - condition: template
                         value_template: !input sun_template
