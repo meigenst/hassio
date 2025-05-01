@@ -242,7 +242,7 @@ action:
             conditions:
               - condition: not
                 conditions:
-                  - condition: or
+                  - condition: and
                     conditions:
                       - condition: template
                         value_template: !input sun_template
