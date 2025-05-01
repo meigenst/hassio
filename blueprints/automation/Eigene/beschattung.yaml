@@ -232,6 +232,10 @@ action:
           position: !input cover_level2
         target:
           entity_id: !input cover
+      - action: timer.start
+        target:
+          entity_id: !input timer_disable
+        data: {}
     else:
       - if:
           - condition: and
@@ -262,7 +266,7 @@ action:
             data: {}
             target:
               entity_id: !input cover
-  - action: timer.start
-    target:
-      entity_id: !input timer_disable
-    data: {}
+          - action: timer.start
+            target:
+              entity_id: !input timer_disable
+            data: {}
